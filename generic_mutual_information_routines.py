@@ -86,6 +86,10 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     timeseries_b : 1D np.array with same size as timeseries_a. this one will be lagged. must not have any np.nan values
     temporal_resolution : int
         temporal resolution in minutes. If not in minutes please interpolate first!
+    max_lag : default = 60 minutes
+        maximum lag for xaxis in minutes
+    min_lag : default = 60 minutes
+        minimum lag for xaxis in minutes
     check_surrogate : bool
         If True, plots the surrogate MI info, if False draws an arrow indicating
         the mean surrogate MI. The default is False.
