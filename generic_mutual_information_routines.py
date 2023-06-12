@@ -9,6 +9,7 @@ import os
 import pathlib
 import matplotlib
 import aaft
+import scipy
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,7 +22,7 @@ from scipy import stats
 from sklearn.cluster import KMeans
 from sklearn import metrics
  
-def test_mi_lag_finder(check_surrogate=False):
+def test_mi_lag_finder(check_surrogate=False, check_entropy=True):
     """
     Run this to check mi_lag_finder is working
     """
@@ -41,7 +42,7 @@ def test_mi_lag_finder(check_surrogate=False):
     ax.set_ylabel('amplitude')
     ax.set_title('Signals to be compared')
     
-    ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate)
+    ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate, check_entropy=check_entropy)
 
     return
 
@@ -99,7 +100,7 @@ def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_
     return timeseries_a, lagged_timeseries_b, lags
 
 def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_lag=-60, check_surrogate=False,
-                  csize=15):
+                  csize=15, check_entropy=False, entropy_bins=np.linspace(-10,10,21)):
     """
 
     Parameters
@@ -117,6 +118,13 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         the mean surrogate MI. The default is False.
     csize : integer
         fontsize applied to all axes labels, ticks and legends
+    check_entropy : bool
+        If True, calculates the entropy in timeseries_a and lagged timeseries_b
+        and labels the axis with a red arrow indicating the minimum entropy. It
+        is wise to supply entropy_bins suiting your data!
+    entropy_bins : np.array
+        To calculate entropy, data from timeseries must be binned in a histogram.
+        This variable defines the bin edges to be supplied to np.histogram.
 
     Returns
     -------
@@ -169,6 +177,21 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
             xytext=(-0.20,0.0),
             annotation_clip=False,arrowprops=dict(width=1.0,
             headwidth=10.0, color="dodgerblue"), color="dodgerblue", ha='left', va='center', xycoords='axes fraction', fontsize=csize)
+
+    # Calculate the entropy of X, and Y, and compare to the MI
+    if check_entropy==True:
+        prob_a,bin_edges=np.histogram(timeseries_a,entropy_bins,density=True)
+        a_entropy=scipy.stats.entropy(prob_a)
+        b_entropy=[]
+        for i in range(lags.size):
+            prob_b,bin_edges=np.histogram(lagged_timeseries_b[:,i], entropy_bins, density=True)
+            b_entropy.append(scipy.stats.entropy(prob_b))
+        all_entropy=np.append(b_entropy,a_entropy)
+        ax.annotate(str('%.2g' % np.min(all_entropy)),(0.0,1.0),
+            xytext=(-0.20,1.0),
+            annotation_clip=False,arrowprops=dict(width=1.0,
+            headwidth=10.0, color="firebrick"), color="firebrick", ha='left', va='center', xycoords='axes fraction', fontsize=csize)
+
 
     # Fit an x squared curve
     def x_squared(x,a,b,c):
