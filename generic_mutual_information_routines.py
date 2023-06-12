@@ -46,7 +46,31 @@ def test_mi_lag_finder(check_surrogate=False):
     return
 
 def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_lag=-60):
-    
+    """
+
+    Parameters
+    ----------
+    timeseries_a : np.array 
+        timeseries to be kept the same for mutual info lagging
+    timeseries_b : np.array
+        timeseries to be lagged for mutual info lagging
+    temporal_resolution : integer, optional
+        temporal resolution of the data in minutes. The default is 1.
+    max_lag : integer, optional
+        maximum lag to shift data by in minutes. The default is 60.
+    min_lag : TYPE, optional
+        minimum lag to shift data by in minutes. The default is -60.
+
+    Returns
+    -------
+    timeseries_a : np.array
+        unlagged timeseries_a, trimmed to length (i.e. minus the buffer) enabling shifting of timeseries_b.
+    lagged_timeseries_b : np.array (2d)
+        lagged timeseries_b, length of timeseries_a x length of lags.
+    lags : np.array
+        lags in minutes.
+
+    """
     
     
     print('-------------------------')
