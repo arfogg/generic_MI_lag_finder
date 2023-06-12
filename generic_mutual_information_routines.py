@@ -89,11 +89,16 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     check_surrogate : bool
         If True, plots the surrogate MI info, if False draws an arrow indicating
         the mean surrogate MI. The default is False.
+    csize : integer
+        fontsize applied to all axes labels, ticks and legends
 
     Returns
     -------
     ax : axes object
-
+    lags : array of the xaxis lags (minutes)
+    mutual_information : array of the yaxis mutual information (bits)
+    x_squared_df : pandas DataFrame containing fitting information on x-squared fit
+    x_piecewise_df : pandas DataFrame containing fitting information on piecewise linear fit
     """
 
     # check arrays are of the same length
@@ -210,7 +215,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
 
 
     #RETURN MI DATA
-    return ax, x_squared_df, x_piecewise_df
+    return ax, lags, mutual_information, x_squared_df, x_piecewise_df
 
 
        
