@@ -41,11 +41,9 @@ def test_mi_lag_finder(check_surrogate=False):
     ax.set_ylabel('amplitude')
     ax.set_title('Signals to be compared')
     
+    ax, lags, mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate)
 
-    #lags, mutual_information, RPS_mutual_information=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate)
-    ax, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate)
-
-    return #lags, mutual_information, RPS_mutual_information
+    return
 
 def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_lag=-60):
     
