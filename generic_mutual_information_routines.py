@@ -153,7 +153,6 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     RPS_mutual_information=mutual_info_regression(lagged_timeseries_b,RPS_timeseries_a, random_state=0)
 
 
-    #return lags, mutual_information, RPS_mutual_information
     # Define plotting window
     fig,ax=plt.subplots()
     
@@ -173,11 +172,11 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     # Fit an x squared curve
     def x_squared(x,a,b,c):
         return -a*((x+b)**2)+c
-
     popt,pcov=curve_fit(x_squared,lags,mutual_information)
     xsq_modeli=x_squared(lags, *popt)
     xsq_tpeak=lags[xsq_modeli.argmax()]
     xsq_ipeak=xsq_modeli.max()
+    
     # Plot the curve and vertical line for the T peak
     ax.plot(lags, xsq_modeli, color="#98823c", label='$x^2$')
     ax.axvline(x=xsq_tpeak,color="#98823c",linewidth=1.0,linestyle='dashed', label='lag='+str(xsq_tpeak))
@@ -188,6 +187,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         lower,prediction,upper = get_prediction_interval(i, mutual_information, xsq_modeli, pi=0.80)
         lower_interval.append(lower)
         upper_interval.append(upper)
+        
     # Plot the 80% confidence interval
     ax.fill_between(lags,upper_interval, lower_interval, color="#98823c",label='$x^2$ 80% CI', alpha=0.3, linewidth=0.0)
 
@@ -200,11 +200,11 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     # Fit a linear piecewise curve
     def piecewise_linear(x, x0, y0, k1, k2):
         return np.piecewise(x, [x < x0, x >= x0], [lambda x:k1*x + y0-k1*x0, lambda x:k2*x + y0-k2*x0])
-
     popt_lin,pcov_lin=curve_fit(piecewise_linear,lags,mutual_information)
     xlin_modeli=piecewise_linear(lags.astype(float), *popt_lin)
     xlin_tpeak=lags[xlin_modeli.argmax()]
     xlin_ipeak=xlin_modeli.max()
+    
     # Plot the curve and vertical line for the T peak
     ax.plot(lags, xlin_modeli, color="#9a5ea1", label='pw')
     ax.axvline(x=xlin_tpeak,color="#9a5ea1",linewidth=1.0,linestyle='dashed', label='lag='+str(xlin_tpeak))
@@ -215,6 +215,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         lower,prediction,upper = get_prediction_interval(i, mutual_information, xlin_modeli, pi=0.80)
         lower_interval.append(lower)
         upper_interval.append(upper)
+        
     # Plot the 80% confidence interval
     ax.fill_between(lags,upper_interval, lower_interval, color="#9a5ea1",label='pw 80% CI', alpha=0.3, linewidth=0.0)
 
@@ -224,14 +225,6 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
                                 'RMS':np.mean((mutual_information-xlin_modeli)**2)
                                 }, index=[0])
 
-
-
-
-
-
-
-
-
     # Formatting
     ax.set_ylabel('Mutual Information (bits)', fontsize=csize)
     ax.set_xlabel('Lag time (minutes)', fontsize=csize)
@@ -240,7 +233,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     ax.legend()
 
 
-    #RETURN MI DATA
+    # Return axes, lags, mutual info, and details on x_squared and piecewise fitting
     return ax, lags, mutual_information, x_squared_df, x_piecewise_df
 
 
