@@ -100,7 +100,7 @@ def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_
     return timeseries_a, lagged_timeseries_b, lags
 
 def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_lag=-60, check_surrogate=False,
-                  csize=15, check_entropy=False, entropy_bins=np.linspace(-10,10,21)):
+                  csize=15, check_entropy=False, entropy_bins_a=np.linspace(-10,10,21), entropy_bins_b=np.linspace(-10,10,21)):
     """
 
     Parameters
@@ -122,9 +122,12 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         If True, calculates the entropy in timeseries_a and lagged timeseries_b
         and labels the axis with a red arrow indicating the minimum entropy. It
         is wise to supply entropy_bins suiting your data!
-    entropy_bins : np.array
+    entropy_bins_a : np.array
         To calculate entropy, data from timeseries must be binned in a histogram.
-        This variable defines the bin edges to be supplied to np.histogram.
+        This variable defines the bin edges to be supplied to np.histogram for timeseries_a.
+    entropy_bins_b : np.array
+        To calculate entropy, data from timeseries must be binned in a histogram.
+        This variable defines the bin edges to be supplied to np.histogram for timeseries_b.        
 
     Returns
     -------
@@ -180,11 +183,11 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
 
     # Calculate the entropy of X, and Y, and compare to the MI
     if check_entropy==True:
-        prob_a,bin_edges=np.histogram(timeseries_a,entropy_bins,density=True)
+        prob_a,bin_edges=np.histogram(timeseries_a,entropy_bins_a,density=True)
         a_entropy=scipy.stats.entropy(prob_a)
         b_entropy=[]
         for i in range(lags.size):
-            prob_b,bin_edges=np.histogram(lagged_timeseries_b[:,i], entropy_bins, density=True)
+            prob_b,bin_edges=np.histogram(lagged_timeseries_b[:,i], entropy_bins_b, density=True)
             b_entropy.append(scipy.stats.entropy(prob_b))
         all_entropy=np.append(b_entropy,a_entropy)
         ax.annotate(str('%.2g' % np.min(all_entropy)),(0.0,1.0),
