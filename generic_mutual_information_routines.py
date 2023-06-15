@@ -42,7 +42,7 @@ def test_mi_lag_finder(check_surrogate=False, check_entropy=True):
     ax.set_ylabel('amplitude')
     ax.set_title('Signals to be compared')
     
-    ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate, check_entropy=check_entropy)
+    ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df, min_entropy=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate, check_entropy=check_entropy)
 
     return
 
@@ -261,7 +261,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
 
 
     # Return axes, lags, mutual info, and details on x_squared and piecewise fitting
-    return ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df
+    return ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df, np.min(all_entropy)
 
 
        
