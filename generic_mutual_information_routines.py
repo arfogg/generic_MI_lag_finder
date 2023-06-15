@@ -176,7 +176,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         ax.plot(lags, RPS_mutual_information, linewidth=0.0, color='dodgerblue',marker='^',fillstyle='none',label='RPS MI')
 
     else:
-        ax.annotate(str('%.2g' % np.mean(RPS_mutual_information)),(0.0,0.0),
+        ax.annotate("I'="+str('%.2g' % np.mean(RPS_mutual_information)),(0.0,0.0),
             xytext=(-0.20,0.0),
             annotation_clip=False,arrowprops=dict(width=1.0,
             headwidth=10.0, color="dodgerblue"), color="dodgerblue", ha='left', va='center', xycoords='axes fraction', fontsize=csize)
@@ -184,13 +184,13 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     # Calculate the entropy of X, and Y, and compare to the MI
     if check_entropy==True:
         prob_a,bin_edges=np.histogram(timeseries_a,entropy_bins_a,density=True)
-        a_entropy=scipy.stats.entropy(prob_a)
+        a_entropy=scipy.stats.entropy(prob_a, base=2) #base=2 puts it in units=bits
         b_entropy=[]
         for i in range(lags.size):
             prob_b,bin_edges=np.histogram(lagged_timeseries_b[:,i], entropy_bins_b, density=True)
-            b_entropy.append(scipy.stats.entropy(prob_b))
+            b_entropy.append(scipy.stats.entropy(prob_b, base=2))
         all_entropy=np.append(b_entropy,a_entropy)
-        ax.annotate(str('%.2g' % np.min(all_entropy)),(0.0,1.0),
+        ax.annotate("$H_{min}$="+str('%.2g' % np.min(all_entropy)),(0.0,1.0),
             xytext=(-0.20,1.0),
             annotation_clip=False,arrowprops=dict(width=1.0,
             headwidth=10.0, color="firebrick"), color="firebrick", ha='left', va='center', xycoords='axes fraction', fontsize=csize)
