@@ -25,6 +25,20 @@ from sklearn import metrics
 def test_mi_lag_finder(check_surrogate=False, check_entropy=True):
     """
     Run this to check mi_lag_finder is working
+    
+    Parameters
+    ----------
+    check_surrogate : bool, default False
+        Parsed to mi_lag_finder. If True plots the random phase surrogate
+        mutual information as a function of lag time
+    check_entropy : bool, default True
+        Parsed to mi_lag_finder. If True indicates the minimum entropy
+        with a red arrow on the output axis
+        
+    Returns
+    -------
+    Plots the mutual information as a function of lag time, with
+        piecewise and quadratic fits.
     """
     
     # Define some fake data to run the MI lag finder on
@@ -44,6 +58,8 @@ def test_mi_lag_finder(check_surrogate=False, check_entropy=True):
     
     ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df, min_entropy=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate, check_entropy=check_entropy)
 
+    plt.show()
+
     return
 
 def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_lag=-60):
@@ -59,7 +75,7 @@ def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_
         temporal resolution of the data in minutes. The default is 1.
     max_lag : integer, optional
         maximum lag to shift data by in minutes. The default is 60.
-    min_lag : TYPE, optional
+    min_lag : integer, optional
         minimum lag to shift data by in minutes. The default is -60.
 
     Returns
