@@ -28,7 +28,7 @@ This testing function will generate and plot two example signals, timeseries A a
 
 
 It will then run `mi_lag_finder`, and plot out the MI content as a function of applied lag:
-![alt text](https://github.com/arfogg/generic_MI_lag_finder/test_example_MI.png "MI as a function of lag")
+![alt text](test_example_MI.png "MI as a function of lag")
 
 ## Acknowledgements
 
