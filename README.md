@@ -15,9 +15,9 @@ scipy, matplotlib, numpy, pandas, datetime, sklearn, aaft
 
 ## Running the code
 
-First, the code must be downloaded using `git pull`
+First, the code must be downloaded using `git clone https://github.com/arfogg/generic_MI_lag_finder`
 
-Then, from the terminal:
+Then, from a python terminal:
 `import generic_mutual_information_routines`
 
 To ensure all packages are installed, and the code is working correctly run:
