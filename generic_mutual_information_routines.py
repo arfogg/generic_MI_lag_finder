@@ -111,7 +111,8 @@ def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_
     return timeseries_a, lagged_timeseries_b, lags
 
 def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_lag=-60, check_surrogate=False,
-                  csize=15, check_entropy=False, entropy_bins_a=np.linspace(-10,10,21), entropy_bins_b=np.linspace(-10,10,21)):
+                  csize=15, check_entropy=False, entropy_bins_a=np.linspace(-10,10,21), entropy_bins_b=np.linspace(-10,10,21),
+                  remove_nan_rows=False):
     """
 
     Parameters
@@ -124,12 +125,12 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         maximum lag for xaxis in minutes
     min_lag : default = 60 minutes
         minimum lag for xaxis in minutes
-    check_surrogate : bool
+    check_surrogate : bool, default=False
         If True, plots the surrogate MI info, if False draws an arrow indicating
         the mean surrogate MI. The default is False.
     csize : integer
         fontsize applied to all axes labels, ticks and legends
-    check_entropy : bool
+    check_entropy : bool, default=False
         If True, calculates the entropy in timeseries_a and lagged timeseries_b
         and labels the axis with a red arrow indicating the minimum entropy. It
         is wise to supply entropy_bins suiting your data!
@@ -139,6 +140,10 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     entropy_bins_b : np.array
         To calculate entropy, data from timeseries must be binned in a histogram.
         This variable defines the bin edges to be supplied to np.histogram for timeseries_b.        
+    remove_nan_rows : bool, default=False
+        If True, rows with np.nan from either timeseries_a or timeseries_b are removed from
+        both timeseries. If False, and data are parsed with np.nan, program will exit.
+        THIS IS CURRENTLY BEING TESTED TO SEE HOW THE SCIENCE RESULTS ARE AFFECTED.
 
     Returns
     -------
@@ -159,10 +164,22 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         print('Exiting...')
         raise NameError('timeseries_a and timeseries_b must have same length')
         
-    if np.isnan(np.sum(timeseries_a)) | np.isnan(np.sum(timeseries_b)):
+    if (np.isnan(np.sum(timeseries_a)) | np.isnan(np.sum(timeseries_b))) & (remove_nan_rows == False):
         print('ERROR: mi_lag_finder')
-        print('Input data contains np.nan values, please deal with missing data before running this program')
+        print('Input data contains np.nan values, please deal with missing data before')
+        print('    running this program or call flag remove_nan_rows.')
         print('Exiting...')
+        raise NameError('np.nan found in timeseries_a or timeseries_b and remove_nan_rows=False')
+        
+    # Remove NaN rows
+    if remove_nan_rows==True:
+        a_no_nan_ind,=np.where(~np.isnan(timeseries_a))
+        timeseries_a=timeseries_a[a_no_nan_ind]
+        timeseries_b=timeseries_b[a_no_nan_ind]
+
+        b_no_nan_ind,=np.where(~np.isnan(timeseries_b))
+        timeseries_a=timeseries_a[b_no_nan_ind]
+        timeseries_b=timeseries_b[b_no_nan_ind]
         
     # Lag the data, preparing it for MI
     timeseries_a, lagged_timeseries_b, lags=lag_data(timeseries_a, timeseries_b, temporal_resolution=temporal_resolution, max_lag=max_lag, min_lag=min_lag)
