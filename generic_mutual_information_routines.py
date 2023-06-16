@@ -5,9 +5,6 @@ Created on Wed May  3 13:49:29 2023
 @author: A R Fogg
 """
 
-import os
-import pathlib
-import matplotlib
 import aaft
 import scipy
 
@@ -19,8 +16,6 @@ import datetime as dt
 from sklearn.feature_selection import mutual_info_regression
 from scipy.optimize import curve_fit
 from scipy import stats
-from sklearn.cluster import KMeans
-from sklearn import metrics
  
 def test_mi_lag_finder(check_surrogate=False, check_entropy=True):
     """
@@ -155,6 +150,8 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     x_piecewise_df : pandas DataFrame containing fitting information on piecewise linear fit
     """
 
+    start_time=dt.datetime.now()
+
     # check arrays are of the same length
     if timeseries_a.size != timeseries_b.size:
         print('ERROR: mi_lag_finder')
@@ -170,14 +167,14 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     timeseries_a, lagged_timeseries_b, lags=lag_data(timeseries_a, timeseries_b, temporal_resolution=temporal_resolution, max_lag=max_lag, min_lag=min_lag)
 
     # Calculate the MI between a and b, with b at various lags
-    print('Calculating MI between a and b, slow')
+    print('Calculating MI between a and b, slow, started at: ',dt.datetime.now())
     mutual_information=mutual_info_regression(lagged_timeseries_b,timeseries_a, random_state=0)
 
     # Generate a random phase surrogate for timeseries a
     print('Generating a random phase surrogate of timeseries a')
     RPS_timeseries_a=aaft.AAFTsur(timeseries_a)
     # Calculate MI between RPS of a and b, with b at various lags
-    print('Calculating MI between RPS a and b, slow')
+    print('Calculating MI between RPS a and b, slow, started at: ',dt.datetime.now())
     RPS_mutual_information=mutual_info_regression(lagged_timeseries_b,RPS_timeseries_a, random_state=0)
 
 
@@ -275,7 +272,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         label.set_fontsize(csize)         
     ax.legend()
 
-
+    print('mi_lag_finder complete, time elapsed: ',dt.datetime.now()-start_time)
     # Return axes, lags, mutual info, and details on x_squared and piecewise fitting
     return ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df, np.min(all_entropy)
 
