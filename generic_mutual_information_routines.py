@@ -63,7 +63,7 @@ def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_
     Parameters
     ----------
     timeseries_a : np.array 
-        timeseries to be kept the same for mutual info lagging
+        timeseries to be kept stationary for mutual info lagging
     timeseries_b : np.array
         timeseries to be lagged for mutual info lagging
     temporal_resolution : integer, optional
@@ -157,12 +157,13 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         print('ERROR: mi_lag_finder')
         print('timeseries_a and timeseries_b do not have the same length')
         print('Exiting...')
+        raise NameError('timeseries_a and timeseries_b must have same length')
         
     if np.isnan(np.sum(timeseries_a)) | np.isnan(np.sum(timeseries_b)):
         print('ERROR: mi_lag_finder')
         print('Input data contains np.nan values, please deal with missing data before running this program')
         print('Exiting...')
-    
+        
     # Lag the data, preparing it for MI
     timeseries_a, lagged_timeseries_b, lags=lag_data(timeseries_a, timeseries_b, temporal_resolution=temporal_resolution, max_lag=max_lag, min_lag=min_lag)
 
@@ -271,6 +272,8 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     for label in (ax.get_xticklabels() + ax.get_yticklabels()):
         label.set_fontsize(csize)         
     ax.legend()
+    
+    plt.show()
 
     print('mi_lag_finder complete, time elapsed: ',dt.datetime.now()-start_time)
     # Return axes, lags, mutual info, and details on x_squared and piecewise fitting
