@@ -4,7 +4,7 @@ This package is intended to determine coupling timescales between two sets of da
 
 **License:** CC0-1.0
 
-**Support:** please [create an issue](https://github.com/arfogg/generic_MI_lag_finder/issues) or contact [arfogg](https://github.com/arfogg) directly. Any input on the code / issues found are greatly appreciated and will help to improve software.
+**Support:** please [create an issue](https://github.com/arfogg/generic_MI_lag_finder/issues) or contact [arfogg](https://github.com/arfogg) directly. Any input on the code / issues found are greatly appreciated and will help to improve the software.
 
 ## Required Packages
 
@@ -25,6 +25,9 @@ To ensure all packages are installed, and the code is working correctly run:
 
 This testing function will generate and plot two example signals, timeseries A and B:
 ![alt text](https://github.com/arfogg/generic_MI_lag_finder/test_example_timeseries.png "Timeseries A and B")
+
+![alt text][logo]
+[logo]:https://github.com/arfogg/generic_MI_lag_finder/test_example_timeseries.png "Timeseries A and B"
 
 It will then run `mi_lag_finder`, and plot out the MI content as a function of applied lag:
 ![alt text](https://github.com/arfogg/generic_MI_lag_finder/test_example_MI.png "MI as a function of lag")
