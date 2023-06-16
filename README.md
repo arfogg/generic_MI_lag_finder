@@ -23,7 +23,7 @@ Then, from the terminal:
 To ensure all packages are installed, and the code is working correctly run:
 `generic_mutual_information_routines.test_mi_lag_finder()`
 
-This testing function will generate and plot two example signals, timeseries A and B:
+This testing function `test_mi_lag_finder` will generate and plot two example signals, timeseries A and B:
 ![alt text](test_example_timeseries.png "Timeseries A and B")
 
 
