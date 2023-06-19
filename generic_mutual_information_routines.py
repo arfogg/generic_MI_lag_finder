@@ -296,7 +296,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     # Return axes, lags, mutual info, and details on x_squared and piecewise fitting, and min entropy if called
     if check_entropy==False:
         return ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df
-    elif:
+    else:
         return ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df, np.min(all_entropy)
 
 
