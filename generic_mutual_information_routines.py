@@ -284,7 +284,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
                                 }, index=[0])
 
     # Formatting
-    ax.set_ylabel('Mutual Information (bits)', fontsize=csize)
+    ax.set_ylabel('Mutual Information (nats)', fontsize=csize)
     ax.set_xlabel('Lag time (minutes)', fontsize=csize)
     for label in (ax.get_xticklabels() + ax.get_yticklabels()):
         label.set_fontsize(csize)         
