@@ -219,7 +219,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         b_entropy=[]
         for i in range(lags.size):
             prob_b,bin_edges=np.histogram(lagged_timeseries_b[:,i], entropy_bins_b, density=True)
-            b_entropy.append(scipy.stats.entropy(prob_b, base=2))
+            b_entropy.append(scipy.stats.entropy(prob_b))
         all_entropy=np.append(b_entropy,a_entropy)
         ax.annotate("$H_{min}$="+str('%.2g' % np.min(all_entropy)),(0.0,1.0),
             xytext=(-0.20,1.0),
