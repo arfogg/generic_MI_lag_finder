@@ -109,7 +109,7 @@ def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_
     return timeseries_a, lagged_timeseries_b, lags
 
 def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_lag=-60, check_surrogate=False,
-                  csize=15, entropy_bins_a=np.linspace(-10,10,21), entropy_bins_b=np.linspace(-10,10,21),
+                  csize=15,
                   remove_nan_rows=False):
     """
 
@@ -128,12 +128,6 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         the mean surrogate MI. The default is False.
     csize : integer
         fontsize applied to all axes labels, ticks and legends
-    entropy_bins_a : np.array
-        To calculate entropy, data from timeseries must be binned in a histogram.
-        This variable defines the bin edges to be supplied to np.histogram for timeseries_a.
-    entropy_bins_b : np.array
-        To calculate entropy, data from timeseries must be binned in a histogram.
-        This variable defines the bin edges to be supplied to np.histogram for timeseries_b.        
     remove_nan_rows : bool, default=False
         If True, rows with np.nan from either timeseries_a or timeseries_b are removed from
         both timeseries. If False, and data are parsed with np.nan, program will exit.
