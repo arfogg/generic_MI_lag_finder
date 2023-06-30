@@ -171,7 +171,7 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         
     # Lag the data, preparing it for MI
     timeseries_a, lagged_timeseries_b, lags=lag_data(timeseries_a, timeseries_b, temporal_resolution=temporal_resolution, max_lag=max_lag, min_lag=min_lag)
-
+    
     # Calculate the MI between a and b, with b at various lags
     print('Calculating MI between a and b, slow, started at: ',dt.datetime.now())
     mutual_information=mutual_info_regression(lagged_timeseries_b,timeseries_a, random_state=0)
