@@ -83,7 +83,7 @@ def test_effect_of_data_gaps():
     ax.set_ylabel('amplitude')
     ax.set_title('Signals to be compared - no data gaps')
     
-    ax, lags, mutual_information_nogaps, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b)
+    lags, mutual_information_nogaps, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b, no_plot=True)
 
     plt.show()
     
@@ -109,7 +109,7 @@ def test_effect_of_data_gaps():
    
     fig.tight_layout()
 
-    ax, lags, mutual_information_gaps, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b, remove_nan_rows=True)
+    lags, mutual_information_gaps, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b, remove_nan_rows=True, no_plot=True)
 
     plt.show()
 
