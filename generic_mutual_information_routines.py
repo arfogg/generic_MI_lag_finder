@@ -157,18 +157,19 @@ def lag_data(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60, min_
     
     # Define array of lags    
     lags=np.linspace(min_lag,max_lag,int((max_lag-min_lag)/temporal_resolution)+1).astype(int)
-    
+      
     # Define the boundaries of the data - index if lag=0
     length=timeseries_b.size
-    start_i=abs(min_lag)
-    end_i=length-abs(max_lag)
-    
+    start_i=int(abs(min_lag/temporal_resolution))
+    end_i=length-int(abs(max_lag/temporal_resolution))
+      
     # Define empty array to put lagged timeseries b in    
     lagged_timeseries_b=np.full((end_i-start_i, lags.size), np.nan)
+
     # Fill up this array with lagged data
     print('Lagging timeseries_b')
     for i in range(lags.size):
-        lagged_timeseries_b[:,i]=timeseries_b[start_i+lags[i]:end_i+lags[i]]
+        lagged_timeseries_b[:,i]=timeseries_b[start_i+int(lags[i]/temporal_resolution):end_i+int(lags[i]/temporal_resolution)]
 
     # Chop off the ends of timeseries a so it's the same length as b
     print('Trimming timeseries_a')
