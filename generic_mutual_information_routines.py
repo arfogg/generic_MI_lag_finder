@@ -48,10 +48,79 @@ def test_mi_lag_finder(check_surrogate=False):
     ax.set_ylabel('amplitude')
     ax.set_title('Signals to be compared')
     
-    #ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df, min_entropy=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate, check_entropy=check_entropy)
     ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b,check_surrogate=check_surrogate)
 
     plt.show()
+
+    return
+
+def test_effect_of_data_gaps():
+    """
+    Run this to demonstrate the effect of data gaps on the result
+    
+    Parameters
+    ----------
+
+        
+    Returns
+    -------
+    Plots the mutual information as a function of lag time, for
+        data with and without data gaps
+    """
+    
+    # Define some fake data to run the MI lag finder on
+    n=100
+    timebase=np.linspace(0,(n*5)-1,n*5)
+    timeseries_a=np.concatenate([np.repeat(10,n*2),10*np.cos(np.linspace(0,2*np.pi,n)),np.repeat(10,n*2)])++np.random.normal(0,0.5,n*5)
+    timeseries_b=np.concatenate([np.repeat(-10,n*2),-10*np.cos(np.linspace(0,2*np.pi,n)),np.repeat(-10,n*2)])++np.random.normal(0,0.5,n*5)
+    
+    # Plot out the test signals
+    fig,ax=plt.subplots()
+    ax.plot(timebase,timeseries_a, linewidth=0, marker='.',label='timeseries A', color='mediumvioletred')
+    ax.plot(timebase,timeseries_b, linewidth=0, marker='.', label='timeseries B', color='darkgrey')
+    ax.legend()
+    ax.set_xlabel('fake time axis')
+    ax.set_ylabel('amplitude')
+    ax.set_title('Signals to be compared - no data gaps')
+    
+    ax, lags, mutual_information_nogaps, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b)
+
+    plt.show()
+    
+    # Repeat but with two data gaps
+    timeseries_b[215:235]=np.nan
+    timeseries_b[295:315]=np.nan
+    
+    fig, ax=plt.subplots(nrows=2)
+    ax[0].plot(timebase,timeseries_a, linewidth=1.0, marker='.',label='timeseries A', color='mediumvioletred')
+    ax[0].plot(timebase,timeseries_b, linewidth=1.0, marker='.', label='timeseries B', color='darkgrey')
+    ax[0].legend()
+    ax[0].set_xlabel('fake time axis')
+    ax[0].set_ylabel('amplitude')
+    ax[0].set_title('Signals to be compared - with two data gaps')
+    
+    arr_ind,=np.where(~np.isnan(timeseries_b))
+    ax[1].plot(timebase[0:arr_ind.size],timeseries_a[arr_ind], linewidth=1.0, marker='.',label='timeseries A', color='mediumvioletred')
+    ax[1].plot(timebase[0:arr_ind.size],timeseries_b[arr_ind], linewidth=1.0, marker='.', label='timeseries B', color='darkgrey')
+    ax[1].legend()
+    ax[1].set_xlabel('fake time axis')
+    ax[1].set_ylabel('amplitude')
+    ax[1].set_title('Signals to be compared - as mi_lag_finder sees them')
+   
+    fig.tight_layout()
+
+    ax, lags, mutual_information_gaps, RPS_mutual_information, x_squared_df, x_piecewise_df=mi_lag_finder(timeseries_a,timeseries_b, remove_nan_rows=True)
+
+    plt.show()
+
+    fig,ax=plt.subplots()
+    
+    ax.plot(lags,mutual_information_nogaps, label='no data gaps', color='grey')
+    ax.plot(lags,mutual_information_gaps, label='with data gaps', color='tomato')
+    
+    ax.set_xlabel('Lag (arbitrary)')
+    ax.set_ylabel('Mutual Information (nats)')
+    ax.legend()
 
     return
 
