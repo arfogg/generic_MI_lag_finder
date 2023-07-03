@@ -255,21 +255,22 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     RPS_mutual_information=mutual_info_regression(lagged_timeseries_b,RPS_timeseries_a, random_state=0)
 
 
-    # Define plotting window
-    fig,ax=plt.subplots()
+    if no_plot==False:
+        # Define plotting window
+        fig,ax=plt.subplots()
+        
+        # Plot MI as a function of lag
+        ax.plot(lags, mutual_information, linewidth=0.0, color='black',marker='x',label='MI')
     
-    # Plot MI as a function of lag
-    ax.plot(lags, mutual_information, linewidth=0.0, color='black',marker='x',label='MI')
-
-    # Plot RPS info
-    if check_surrogate==True:
-        ax.plot(lags, RPS_mutual_information, linewidth=0.0, color='dodgerblue',marker='^',fillstyle='none',label='RPS MI')
-
-    else:
-        ax.annotate("I'="+str('%.2g' % np.mean(RPS_mutual_information)),(0.0,0.0),
-            xytext=(-0.20,0.0),
-            annotation_clip=False,arrowprops=dict(width=1.0,
-            headwidth=10.0, color="dodgerblue"), color="dodgerblue", ha='left', va='center', xycoords='axes fraction', fontsize=csize)
+        # Plot RPS info
+        if check_surrogate==True:
+            ax.plot(lags, RPS_mutual_information, linewidth=0.0, color='dodgerblue',marker='^',fillstyle='none',label='RPS MI')
+    
+        else:
+            ax.annotate("I'="+str('%.2g' % np.mean(RPS_mutual_information)),(0.0,0.0),
+                xytext=(-0.20,0.0),
+                annotation_clip=False,arrowprops=dict(width=1.0,
+                headwidth=10.0, color="dodgerblue"), color="dodgerblue", ha='left', va='center', xycoords='axes fraction', fontsize=csize)
 
     # Fit an x squared curve
     def x_squared(x,a,b,c):
@@ -279,9 +280,10 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     xsq_tpeak=lags[xsq_modeli.argmax()]
     xsq_ipeak=xsq_modeli.max()
     
-    # Plot the curve and vertical line for the T peak
-    ax.plot(lags, xsq_modeli, color="#98823c", label='$x^2$')
-    ax.axvline(x=xsq_tpeak,color="#98823c",linewidth=1.0,linestyle='dashed', label='lag='+str(xsq_tpeak))
+    if no_plot==False:
+        # Plot the curve and vertical line for the T peak
+        ax.plot(lags, xsq_modeli, color="#98823c", label='$x^2$')
+        ax.axvline(x=xsq_tpeak,color="#98823c",linewidth=1.0,linestyle='dashed', label='lag='+str(xsq_tpeak))
     
     lower_interval=[]
     upper_interval=[]
@@ -290,8 +292,9 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         lower_interval.append(lower)
         upper_interval.append(upper)
         
-    # Plot the 80% confidence interval
-    ax.fill_between(lags,upper_interval, lower_interval, color="#98823c",label='$x^2$ 80% CI', alpha=0.3, linewidth=0.0)
+    if no_plot==False:
+        # Plot the 80% confidence interval
+        ax.fill_between(lags,upper_interval, lower_interval, color="#98823c",label='$x^2$ 80% CI', alpha=0.3, linewidth=0.0)
 
     # Save fit details to be returned
     x_squared_df=pd.DataFrame({'t_peak':xsq_tpeak,
@@ -307,9 +310,10 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
     xlin_tpeak=lags[xlin_modeli.argmax()]
     xlin_ipeak=xlin_modeli.max()
     
-    # Plot the curve and vertical line for the T peak
-    ax.plot(lags, xlin_modeli, color="#9a5ea1", label='pw')
-    ax.axvline(x=xlin_tpeak,color="#9a5ea1",linewidth=1.0,linestyle='dashed', label='lag='+str(xlin_tpeak))
+    if no_plot==False:
+        # Plot the curve and vertical line for the T peak
+        ax.plot(lags, xlin_modeli, color="#9a5ea1", label='pw')
+        ax.axvline(x=xlin_tpeak,color="#9a5ea1",linewidth=1.0,linestyle='dashed', label='lag='+str(xlin_tpeak))
     
     lower_interval=[]
     upper_interval=[]
@@ -317,9 +321,10 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
         lower,prediction,upper = get_prediction_interval(i, mutual_information, xlin_modeli, pi=0.80)
         lower_interval.append(lower)
         upper_interval.append(upper)
-        
-    # Plot the 80% confidence interval
-    ax.fill_between(lags,upper_interval, lower_interval, color="#9a5ea1",label='pw 80% CI', alpha=0.3, linewidth=0.0)
+       
+    if no_plot==False:
+        # Plot the 80% confidence interval
+        ax.fill_between(lags,upper_interval, lower_interval, color="#9a5ea1",label='pw 80% CI', alpha=0.3, linewidth=0.0)
 
     # Save fit details to be returned
     x_piecewise_df=pd.DataFrame({'t_peak':xlin_tpeak,
@@ -327,17 +332,21 @@ def mi_lag_finder(timeseries_a, timeseries_b, temporal_resolution=1, max_lag=60,
                                 'RMS':np.mean((mutual_information-xlin_modeli)**2)
                                 }, index=[0])
 
-    # Formatting
-    ax.set_ylabel('Mutual Information (nats)', fontsize=csize)
-    ax.set_xlabel('Lag time (minutes)', fontsize=csize)
-    for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-        label.set_fontsize(csize)         
-    ax.legend()
-    
-    plt.show()
+    if no_plot==False:
+        # Formatting
+        ax.set_ylabel('Mutual Information (nats)', fontsize=csize)
+        ax.set_xlabel('Lag time (minutes)', fontsize=csize)
+        for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+            label.set_fontsize(csize)         
+        ax.legend()
+        
+        plt.show()
 
     print('mi_lag_finder complete, time elapsed: ',dt.datetime.now()-start_time)
-    return ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df
+    if no_plot==False:
+        return ax, lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df
+    else:
+        return lags, mutual_information, RPS_mutual_information, x_squared_df, x_piecewise_df
 
        
 def get_prediction_interval(prediction, y_test, test_predictions, pi=.95):
